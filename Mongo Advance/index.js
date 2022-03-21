@@ -16,9 +16,9 @@ const userSchema = mongoose.Schema({
     budget: String,
 });
 
-const user = mongoose.model('Mockmovies', userSchema);
+const user = mongoose.model('mockmovies', userSchema);
 
-app.get("/Mockmovies", async (req,res) => {
+app.get("/mockmovies", async (req,res) => {
     const userData = await user.find({"budget": {$gte: "11795.76"}}).lean().exec();
     // console.log(userData)
     return res.send(userData)
