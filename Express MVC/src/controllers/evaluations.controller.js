@@ -1,12 +1,12 @@
 const express = require("express");
-const Student = require("../models/students.model");
+const Evaluation = require("../models/evaluations.model");
 
 const router = express.Router();
 
 router.post("/", async(req,res)=>{
     try {
-        const student = await Student.create(req.body);
-        return res.status(200).send(student);
+        const evaluation = await Evaluation.create(req.body);
+        return res.status(200).send(evaluation);
     } catch (err) {
         return res.status(500).send({message: err.message});
     }
@@ -14,8 +14,8 @@ router.post("/", async(req,res)=>{
 
 router.get("/", async(req,res)=>{
     try {
-        const students = await Student.find().lean().exec();
-        return res.status(200).send(students);
+        const evaluations = await Evaluation.find().lean().exec();
+        return res.status(200).send(evaluations);
     } catch (err) {
         return res.status(500).send({message: err.message});
     }

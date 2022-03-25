@@ -1,19 +1,17 @@
 const mongoose = require("mongoose");
 
-const connect = require("./configs/db")
-
-const router = required("Router");
-const app = express();
-
-app.use = express.Router();
-
-router.post("/", async(req, res)=>{
-    try {
-       await connect();
-       console.log("I am working for you Anannya!") 
-    } catch (error) {
-        
+const userSchema = new mongoose.Schema(
+    {
+      first_name: { type: String, required: true },
+      last_name: { type: String, required: false },
+      gender: { type: String, required: true },
+      DateOfBirth: { type: Date, required: true },
+      type: { type: String, required: true },      
+    },
+    {
+      versionKey: false,
+      timestamps: true,
     }
-});
+);
 
-module.exports = router;
+module.exports = mongoose.model("user",userSchema);

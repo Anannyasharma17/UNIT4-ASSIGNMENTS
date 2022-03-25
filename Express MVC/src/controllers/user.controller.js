@@ -1,16 +1,24 @@
-const mongoose = require("mongoose");
+const express = require("express");
+const User = require("../models/user.model");
 
-const userSchema = ({
-    firstName: {type:String, require:true},
-    lastName: {type:String, require:true},
-    gender: {type:String, require:true},
-    dateOfBirth: {type:String, require:true},
-    type: {type:String, require:true}
-},
-{
-    versionKey: false,
-});
+const router = express.Router();
 
-const User = mongoose.model("user", userSchema); // user => users
+router.post("/",async(req,res)=>{
+    try {
+        const user = await User.create(req.body)
+       return res.status(200).send(user)
+    } catch (err) {
+        return res.status(500).send({message: err.message});
+    }
+})
 
-module.exports = User; 
+router.get("/",async(req,res)=>{
+    try {
+        const user = await User.find().lean().exec();
+       return res.status(200).send(user)
+    } catch (err) {
+        return res.status(500).send({message: err.message});
+    }
+})
+
+module.exports = router;
