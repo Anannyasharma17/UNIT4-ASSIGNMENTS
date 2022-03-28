@@ -1,65 +1,62 @@
-const express = require("express");
-
-const Todo = require("./models/todo.model");
-const users = require("../models/user.model");
-
+const express = require('express')
 const router = express.Router();
+const Todo = require('../models/todo.model')
 
-router.get("/", async(req, res)=>{
-    try {
-        const todos = await Todo.find().lean().exec();
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+const authenticate = require("../middlewares/authentication")
+
+router.get("/",authenticate,async(req, res)=>{
+    try{
+        const todo = await Todo.find().lean().exec()
+
+        return res.status(200).send(todo)
     }
-});
-
-router.post("/register", async(req, res)=>{
-    try {
-        const todo = await todo.find().populate("userId").lean()
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+    catch(err){
+        return res.status(400).send({message: err.message})
     }
 })
 
-router.post("/login", async(req, res)=>{
-    try {
-        const todo = await todo.create(req.body)
-        return res.status(201).send(todo);
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+router.post("/",authenticate,async(req, res)=>{
+    try{
+        const todo = await Todo.create(req.body)
+
+        return res.status(200).send(todo)
     }
-});
-
-router.get("/todos/:id", async(req, res)=>{
-    try {
-        const todo = await users.findById(req.params.id).lean().exec();
-        return res.status(201).send(Todo);
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+    catch(err){
+        return res.status(400).send({message: err.message})
     }
-});
+})
 
+router.get("/:id",authenticate,async(req, res)=>{
+    try{
+        const todo = await Todo.findById(req.params.id).lean().exec()
 
-router.patch("/todos/:id", async(req, res)=>{
-    try {
-        const todo = await users.findByIdAndUpdate(req.params.id).lean().exec();
-        return res.status(201).send(Todo);
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+        return res.status(200).send(todo)
     }
-});
-
-router.delete("/todos/:id", async(req, res)=>{
-    try {
-        const todo = await users.delete(req.body)
-        return res.status(201).send(Todo);
-    } catch (error) {
-        return res.status(500).send({message: error.message});
+    catch(err){
+        return res.status(401).send({message: err.message})
     }
-});
+})
 
+router.patch("/:id",authenticate,async(req, res)=>{
+    try{
+        const todo = await Todo.findByIdAndUpdate(req.params.id).lean().exec()
 
-module.exports = router;
+        return res.status(200).send(todo)
+    }
+    catch(err){
+        return res.status(401).send({message: err.message})
+    }
+})
 
+router.delete("/:id",authenticate,async(req, res)=>{
+    try{
+        const todo = await Todo.findByIdAndDelete(req.params.id).lean().exec()
 
+        return res.status(200).send(todo)
+    }
+    catch(err){
+        return res.status(401).send({message: err.message})
+    }
+})
 
+module.exports =router

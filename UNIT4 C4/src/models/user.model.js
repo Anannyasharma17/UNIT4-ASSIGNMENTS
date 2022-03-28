@@ -1,26 +1,30 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt');
 
-const todos = require("./todo.model");
-const userSchmema = new mongoose.Schema({
-    firstName: {type: String, require:true},
-    lastName: {type: String, require:true},
-    email: {type: String, require:true},
-    password: {type: String, require:true},
-    todoId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "todos",
-        required: true
+
+const userSchema = new mongoose.Schema(
+    {
+        firstName:{type:String, required:true},
+        lastName:{type:String, required:false},
+        email:{type:String, required:true},
+        password:{type:String, required:true},
+    },
+    {
+        versionKey:false,
+        timestamps:true
     }
-
-},
-{
-    timestemps: true,
-    versionkey: false
-}
 )
+userSchema.pre("save", function (next){
+    const hash = bcrypt.hashSync(this.password, 6);
+    this.password = hash
+    return next()
+})
 
-const users = mongoose.model("user", userSchmema);
+userSchema.methods.checkPassword = function(password){
+    return bcrypt.compareSync(password, hash);
+}
 
-module.exports = users;
+const User = mongoose.model("user",userSchema);
 
+module.exports = User;
 
